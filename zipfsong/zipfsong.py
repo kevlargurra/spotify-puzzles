@@ -9,6 +9,7 @@ input = sys.stdin.readline()
 quality_list = list()
 
 song_order = 1
+first_song_no_of_plays = 0
 for songs in range(int(songs_on_album)):
     input = sys.stdin.readline()
     number_of_plays, song_name = input.split(' ')
