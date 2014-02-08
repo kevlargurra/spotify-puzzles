@@ -17,12 +17,12 @@ public class Reversebinary {
         
         int number = Integer.parseInt(input);
         
-        String bin_number = Integer.toBinaryString(number);
-        String new_bin_number = "";
-        for (int i = bin_number.length() - 1; i >= 0; i--) {
-            new_bin_number += bin_number.charAt(i);
+        String binNumber = Integer.toBinaryString(number);
+        String newBinNumber = "";
+        for (int i = binNumber.length() - 1; i >= 0; i--) {
+            newBinNumber += binNumber.charAt(i);
         }
         
-        System.out.println(Integer.parseInt(new_bin_number, 2));   
+        System.out.println(Integer.parseInt(newBinNumber, 2));   
     }
 }
