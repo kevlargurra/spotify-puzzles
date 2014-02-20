@@ -1,107 +1,84 @@
-import java.io.*;
 import java.util.*;
 
 public class Zipfsong {
 
-	static class Song implements Comparable<Song> {
-	    private String songName;
-	    private int quality;
-	    private int songOrder;
-	    
-	    Song (String songName, int quality, int songOrder) {
-	        this.songName = songName;
-	        this.quality = quality;
-	        this.songOrder = songOrder;
-	    }
-	    
-	    public int compareTo(Song song) {
-        	int qualityDiff = song.getQuality() - quality;
-	    	
-	    	if(qualityDiff != 0) {
-	    		return qualityDiff;
-	    	}
-	    	else  {
-	    		return songOrder - song.songOrder;
-	    	}
-        }
-	    
-	    public int getQuality() {
-	        return quality;
-	    }
-	    
-	    public int getSongOrder() {
-	        return songOrder;
-	    }
-	    
-	    public String getSongName() {
-	        return songName;
-	    }
-	}
-	
-    public static void main (String[] args) {
-    
-    	
-    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static class Song implements Comparable<Song> {
+        private String songName;
+        private long quality;
+        private long songOrder;
         
-        String input = null;
-        
-        try {
-            input = br.readLine();
-        }
-        catch(IOException ioe) {
-            System.exit(0);
+        Song (String songName, long quality, long songOrder) {
+            this.songName = songName;
+            this.quality = quality;
+            this.songOrder = songOrder;
         }
         
-        String[] allAndSelectedSongs = input.split(" ");
-        int songsOnAlbum = Integer.parseInt(allAndSelectedSongs[0]);
-        int songsToSelect = Integer.parseInt(allAndSelectedSongs[1]);
-        
-        int songOrder = 1;
-        int quality;
-        int numOfPlays;
-        
-        Song[] qualityList = new Song[songsOnAlbum];
-        
-        String songName = "";
-        String[] numOfPlaysAndSongName;
-        int firstSongNoOfPlays = 0;
-        
-        for (int i = 0; i < songsOnAlbum; i++) {
-            try {
-                input = br.readLine();
-            }
-            catch(IOException ioe) {
-                System.exit(0);
-            }
+        @Override
+        public int compareTo(Song song) {
+            long qualityDiff = song.getQuality() - quality;
             
-            numOfPlaysAndSongName = input.split(" ");
-            try {
-	            numOfPlays = Integer.parseInt(numOfPlaysAndSongName[0]);
+            if(qualityDiff > 0) {
+                return 1;
             }
-            catch(NumberFormatException e) {
-            	numOfPlays = 0;
+            else if(qualityDiff < 0) {
+                return -1;
             }
-            songName = numOfPlaysAndSongName[1];
-            if (songOrder == 1) {
-                firstSongNoOfPlays = numOfPlays;
-            }
-            
-            if (firstSongNoOfPlays == 0) {
-                quality = 0;
+            else  if(songOrder - song.getSongOrder() > 0) {
+                return 1;
             }
             else {
-            	quality = songOrder * numOfPlays;
+                return -1;
             }
-            
-            qualityList[songOrder - 1] = new Song(songName, quality, songOrder);;
-
-            songOrder++;
         }
-
-        Arrays.sort(qualityList);
         
-        for (int i = 0; i < songsToSelect; i++) {
-            System.out.println(qualityList[i].getSongName());
+        public long getQuality() {
+            return quality;
+        }
+        
+        public long getSongOrder() {
+            return songOrder;
+        }
+       
+        public String getSongName() {
+            return songName;
         }
     }
+    
+    public static void main (String[] args) {
+    	try {
+	        Kattio io = new Kattio(System.in, System.out);
+	    
+	        int songsOnAlbum = io.getInt();
+	        int songsToSelect = io.getInt();
+	        StringBuilder sb = new StringBuilder();
+	        long songOrder = 1;
+	        long quality;
+	        long numOfPlays;
+	        
+	        List<Song> qualityList = new ArrayList<Song>();
+	        String songName = "";
+	        
+	        for (int i = 0; i < songsOnAlbum && io.hasMoreTokens(); i++) {
+	            numOfPlays = io.getLong();
+	            songName = io.getWord();
+	            quality = songOrder * numOfPlays;
+	            qualityList.add(new Song(songName, quality, songOrder));
+	            songOrder++;
+	        }
+	
+	        Collections.sort(qualityList);
+	        Iterator<Song> it = qualityList.iterator();
+	        
+	        for (int i = 0; i < songsToSelect && it.hasNext(); i++) {
+	            sb.append(it.next().getSongName()).append("\n");
+	        }
+	        io.print(sb);
+	        io.close();
+	    }
+    	catch(Exception e) {
+    		System.exit(0);
+        }
+    }
+    
+    
 }
